@@ -1,6 +1,7 @@
 #ifndef ATCODER_MODINT_HPP
 #define ATCODER_MODINT_HPP 1
 
+#include <algorithm>
 #include <cassert>
 #include <numeric>
 #include <type_traits>
@@ -40,7 +41,7 @@ struct static_modint : internal::static_modint_base {
     template <class T, internal::is_signed_int_t<T>* = nullptr>
     static_modint(T v) {
         long long mo = umod();
-        long long x = (long long)(v >= mo ? v % mo : v);
+        long long x = (long long)(std::max(+v, -v) >= mo ? v % mo : v);
         if (x < 0) x += umod();
         _v = (unsigned int)(x);
     }
@@ -160,7 +161,8 @@ template <int id> struct dynamic_modint : internal::modint_base {
     template <class T, internal::is_signed_int_t<T>* = nullptr>
     dynamic_modint(T v) {
         long long mo = mod();
-        long long x = (long long)(v >= mo ? v % mo : v);
+        long long x =
+            (long long)(std::max(+v, -v) >= std::max(mo, -mo) ? v % mo : v);
         if (x < 0) x += mod();
         _v = (unsigned int)(x);
     }
