@@ -39,13 +39,15 @@ struct static_modint : internal::static_modint_base {
     static_modint() : _v(0) {}
     template <class T, internal::is_signed_int_t<T>* = nullptr>
     static_modint(T v) {
-        long long x = (long long)(v % (long long)(umod()));
+        long long mo = umod();
+        long long x = (long long)(v >= mo ? v % mo : v);
         if (x < 0) x += umod();
         _v = (unsigned int)(x);
     }
     template <class T, internal::is_unsigned_int_t<T>* = nullptr>
     static_modint(T v) {
-        _v = (unsigned int)(v % umod());
+        unsigned int umo = umod();
+        _v = (unsigned int)(v >= umo ? v % umo : v);
     }
 
     unsigned int val() const { return _v; }
@@ -84,7 +86,8 @@ struct static_modint : internal::static_modint_base {
     mint& operator*=(const mint& rhs) {
         unsigned long long z = _v;
         z *= rhs._v;
-        _v = (unsigned int)(z % umod());
+        unsigned int umo = umod();
+        _v = (unsigned int)(z >= umo ? z % umo : z);
         return *this;
     }
     mint& operator/=(const mint& rhs) { return *this = *this * rhs.inv(); }
@@ -156,13 +159,15 @@ template <int id> struct dynamic_modint : internal::modint_base {
     dynamic_modint() : _v(0) {}
     template <class T, internal::is_signed_int_t<T>* = nullptr>
     dynamic_modint(T v) {
-        long long x = (long long)(v % (long long)(mod()));
+        long long mo = mod();
+        long long x = (long long)(v >= mo ? v % mo : v);
         if (x < 0) x += mod();
         _v = (unsigned int)(x);
     }
     template <class T, internal::is_unsigned_int_t<T>* = nullptr>
     dynamic_modint(T v) {
-        _v = (unsigned int)(v % mod());
+        unsigned int umo = mod();
+        _v = (unsigned int)(v >= umo ? v % umo : v);
     }
 
     unsigned int val() const { return _v; }
